@@ -488,18 +488,6 @@
 
 /**
  @brief Returns an MFAPIURLRequestConfig object initialized for use with the
- file/create_snapshot API.
- 
- @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
- 
- @param parameters Dictionary with API parameter options. See
- [Developer Documentation](https://www.mediafire.com/developers/core_api/1.0/file.php#create_snapshot)
- for list of valid parameters.
- */
-- (MFAPIURLRequestConfig*)createSnapshotConf:(NSDictionary*)options query:(NSDictionary*)parameters;
-
-/**
- @brief Returns an MFAPIURLRequestConfig object initialized for use with the
  file/delete API.
  
  @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
@@ -509,18 +497,6 @@
  for list of valid parameters.
  */
 - (MFAPIURLRequestConfig*)deleteConf:(NSDictionary*)options query:(NSDictionary*)parameters;
-
-/**
- @brief Returns an MFAPIURLRequestConfig object initialized for use with the
- file/get_flags API.
- 
- @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
- 
- @param parameters Dictionary with API parameter options. See
- [Developer Documentation](https://www.mediafire.com/developers/core_api/1.0/file.php#get_flags)
- for list of valid parameters.
- */
-- (MFAPIURLRequestConfig*)getFlagsConf:(NSDictionary*)options query:(NSDictionary*)parameters;
 
 /**
  @brief Returns an MFAPIURLRequestConfig object initialized for use with the
@@ -632,18 +608,6 @@
 
 /**
  @brief Returns an MFAPIURLRequestConfig object initialized for use with the
- file/set_flags API.
- 
- @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
- 
- @param parameters Dictionary with API parameter options. See
- [Developer Documentation](https://www.mediafire.com/developers/core_api/1.0/file.php#set_flags)
- for list of valid parameters.
- */
-- (MFAPIURLRequestConfig*)setFlagsConf:(NSDictionary*)options query:(NSDictionary*)parameters;
-
-/**
- @brief Returns an MFAPIURLRequestConfig object initialized for use with the
  file/update API.
  
  @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
@@ -665,18 +629,6 @@
  for list of valid parameters.
  */
 - (MFAPIURLRequestConfig*)updateFileConf:(NSDictionary*)options query:(NSDictionary*)parameters;
-
-/**
- @brief Returns an MFAPIURLRequestConfig object initialized for use with the
- file/update_password API.
- 
- @param options Dictionary with HTTP client options. See MFHTTPOptions.h for list of valid parameters.
- 
- @param parameters Dictionary with API parameter options. See
- [Developer Documentation](https://www.mediafire.com/developers/core_api/1.0/file.php#update_password)
- for list of valid parameters.
- */
-- (MFAPIURLRequestConfig*)updatePasswordConf:(NSDictionary*)options query:(NSDictionary*)parameters;
 
 /**
  @brief Returns an MFAPIURLRequestConfig object initialized for use with the

@@ -496,7 +496,7 @@ typedef void (^StandardCallback)(NSDictionary* response);
     NSDictionary* unitInfo =
     @{@"unit_data"  : unit,
       @"unit_hash"  : [MFHash sha256Hex:unit],
-      @"unit_size"  : [NSString stringWithFormat:@"%lu", unit.length],
+      @"unit_size"  : [NSString stringWithFormat:@"%lu", (unsigned long)unit.length],
       @"unit_id"    : [NSString stringWithFormat:@"%i", self.lastUnit],
       @"file_name"  : fileName,
       @"file_size"  : [NSString stringWithFormat:@"%lli", self.fileSize],
