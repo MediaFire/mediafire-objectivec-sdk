@@ -24,6 +24,12 @@ static unsigned long long HASH_BLOCK_SIZE = 262144;
     int64_t fileSize = [fileInfo[UFILESIZE] longLongValue];
     unsigned long chunkSize = [fileInfo[UUNITSIZE] longLongValue];
     unsigned long startFrom = [fileInfo[ULASTUNIT] longLongValue] * chunkSize;
+    
+    if ((startFrom >= LLONG_MAX) || (startFrom > fileSize) || (fileSize < 0)) {
+        mflog(@"Cannot get chunk. fileSize(%lli) startFrom(%llu) chunkNumber(%i) chunkSize(%llu)", fileSize, startFrom, chunkNumber, chunkSize);
+        return nil;
+    }
+    
     if (startFrom + chunkSize > fileSize) {
         chunkSize = (unsigned long)(fileSize - startFrom);
     }
