@@ -215,13 +215,14 @@
 //------------------------------------------------------------------------------
 - (MFAPIURLRequestConfig*)uploadUnitConf:(NSDictionary*)options fileInfo:(NSDictionary*)fileInfo query:(NSDictionary*)parameters {
     NSDictionary* headers = [self getHeadersFrom:fileInfo];
-    NSDictionary* reqOptions = [options merge:
-                                @{HREQHEADERS   : headers,
-                                  HUPTYPE       : @"data",
-                                  HUPDATA       : fileInfo[@"unit_data"],
-                                  HTOKEN        : HTKT_PARA,
-                                  HPARALLEL     : HPTT_UPLOAD,
-                                  HHOST         : MFREST.host}];
+    NSDictionary* reqOptions = [@{HHOST: [MFREST host]} merge: options];
+
+    reqOptions = [reqOptions merge:
+                  @{HREQHEADERS   : headers,
+                    HUPTYPE       : @"data",
+                    HUPDATA       : fileInfo[@"unit_data"],
+                    HTOKEN        : HTKT_PARA,
+                    HPARALLEL     : HPTT_UPLOAD}];
     
     return [self uploadConf:reqOptions query:parameters];
 }

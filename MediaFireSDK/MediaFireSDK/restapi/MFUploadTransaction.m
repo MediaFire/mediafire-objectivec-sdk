@@ -408,6 +408,51 @@ typedef void (^StandardCallback)(NSDictionary* response);
         return;
     }
     
+    id<MFUploadHelperDelegate> helper = self.helper;
+    if (helper == nil) {
+        helper = [[MFUploadHelper alloc] init];
+    }
+    
+    NSData* unit = nil;
+    
+    if (self.uploadData != nil) {
+        unit = [self.uploadData getBytesFromIndex:(self.lastUnit*self.unitSize) length:self.unitSize];
+    } else {
+        unit = [helper getChunk:self.lastUnit forFile:[self fileInfo]];
+    }
+    
+    if (unit == nil) {
+        [self fail:[MFErrorMessage nullField:@"unit"]];
+        return;
+    }
+    
+    NSString* fileName = self.fileName;
+    if (fileName == nil) {
+        fileName = @"";
+    }
+    NSString* fileHash = self.fileHash;
+    if (fileHash == nil) {
+        fileHash = @"";
+    }
+    NSString* client = self.httpClientId;
+    if (client == nil) {
+        client = @"";
+    }
+    
+    NSDictionary* unitInfo =
+    @{@"unit_data"  : unit,
+      @"unit_hash"  : [MFHash sha256Hex:unit],
+      @"unit_size"  : [NSString stringWithFormat:@"%lu", (unsigned long)unit.length],
+      @"unit_id"    : [NSString stringWithFormat:@"%i", self.lastUnit],
+      @"file_name"  : fileName,
+      @"file_size"  : [NSString stringWithFormat:@"%lli", self.fileSize],
+      @"file_hash"  : fileHash,
+      @"action_on_duplicate" : ON_FIND_DUP,
+      @"http_client_id" : client};
+    
+    NSDictionary* params = [self parametersForResumableUpload];
+    NSDictionary* uploadOptions = [self optionsForResumableUpload];
+    
     NSDictionary* uploadCallbacks =
     @{ONPROGRESS : self.opCallbacks.onprogress,
       @"httpTask" : [self httpTask],
@@ -457,58 +502,25 @@ typedef void (^StandardCallback)(NSDictionary* response);
           if ([self shouldCancel]) {
               [self fail:[MFErrorMessage cancelled]];
           } else {
-              mflog(@"Cannot upload. - %@", response);
-              [self fail:response];
+              if ([self shouldRetryResumable:response originalOptions:uploadOptions unitInfo:unitInfo]) {
+                  mflog(@"Will retry upload. - %@", response);
+                  [self resumableUpload];
+              } else {
+                  mflog(@"Cannot upload. - %@", response);
+                  [self fail:response];
+              }
           }
       }};
     
-    id<MFUploadHelperDelegate> helper = self.helper;
-    if (helper == nil) {
-        helper = [[MFUploadHelper alloc] init];
-    }
-    
-    NSData* unit = nil;
-    
-    if (self.uploadData != nil) {
-        unit = [self.uploadData getBytesFromIndex:(self.lastUnit*self.unitSize) length:self.unitSize];
-    } else {
-        unit = [helper getChunk:self.lastUnit forFile:[self fileInfo]];
-    }
-    
-    if (unit == nil) {
-        [self fail:[MFErrorMessage nullField:@"unit"]];
-        return;
-    }
-    
-    NSString* fileName = self.fileName;
-    if (fileName == nil) {
-        fileName = @"";
-    }
-    NSString* fileHash = self.fileHash;
-    if (fileHash == nil) {
-        fileHash = @"";
-    }
-    NSString* client = self.httpClientId;
-    if (client == nil) {
-        client = @"";
-    }
-    
-    NSDictionary* unitInfo =
-    @{@"unit_data"  : unit,
-      @"unit_hash"  : [MFHash sha256Hex:unit],
-      @"unit_size"  : [NSString stringWithFormat:@"%lu", (unsigned long)unit.length],
-      @"unit_id"    : [NSString stringWithFormat:@"%i", self.lastUnit],
-      @"file_name"  : fileName,
-      @"file_size"  : [NSString stringWithFormat:@"%lli", self.fileSize],
-      @"file_hash"  : fileHash,
-      @"action_on_duplicate" : ON_FIND_DUP,
-      @"http_client_id" : client};
-    
-    NSDictionary* params = [self parametersForResumableUpload];
     
     [self setStatus:@"uploading"];
-    [self.api uploadUnit:[self optionsForResumableUpload] fileInfo:unitInfo query:params callbacks:uploadCallbacks];
+    [self.api uploadUnit:uploadOptions fileInfo:unitInfo query:params callbacks:uploadCallbacks];
     
+}
+
+//------------------------------------------------------------------------------
+- (BOOL)shouldRetryResumable:(NSDictionary*)response originalOptions:(NSDictionary*)options unitInfo:(NSDictionary*)unitInfo {
+    return false;
 }
 
 //------------------------------------------------------------------------------

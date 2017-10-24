@@ -120,6 +120,11 @@
 - (NSDictionary*)optionsForInstantUpload;
 
 /**
+ @brief Returns true if the failed unit should be retried instead of failing the upload.
+ */
+- (BOOL)shouldRetryResumable:(NSDictionary*)response originalOptions:(NSDictionary*)options unitInfo:(NSDictionary*)unitInfo;
+
+/**
  @brief Returns http client options for the resumable api call.
  */
 - (NSDictionary*)optionsForResumableUpload;
