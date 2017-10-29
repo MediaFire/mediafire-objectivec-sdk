@@ -73,7 +73,7 @@ typedef int (^UpdateDigest)(NSData* chunkData);
     __block NSMutableData* dataBuffer = [[NSMutableData alloc]init];
     
     MFHashChunkBlock block = ^(int index, BOOL* done) {
-        [file seekToFileOffset: (index*size)];
+        [file seekToFileOffset: (((unsigned long long)index)*size)];
         @autoreleasepool {
             [dataBuffer setData:[file readDataOfLength:size]];
             if (dataBuffer.length < size) {
@@ -145,7 +145,7 @@ typedef int (^UpdateDigest)(NSData* chunkData);
     __block NSMutableData* dataBuffer = [[NSMutableData alloc]init];
     
     MFHashChunkBlock block = ^(int index, BOOL* done) {
-        [file seekToFileOffset: (index*size)];
+        [file seekToFileOffset: (((unsigned long long)index)*size)];
         @autoreleasepool {
             [dataBuffer setData:[file readDataOfLength:size]];
             if (dataBuffer.length < size) {
@@ -218,7 +218,7 @@ typedef int (^UpdateDigest)(NSData* chunkData);
     __block NSMutableData* dataBuffer = [[NSMutableData alloc]init];
     
     MFHashChunkBlock block = ^(int index, BOOL* done) {
-        [file seekToFileOffset: (index*size)];
+        [file seekToFileOffset: (((unsigned long long)index)*size)];
         @autoreleasepool {
             [dataBuffer setData:[file readDataOfLength:size]];
             if (dataBuffer.length < size) {
